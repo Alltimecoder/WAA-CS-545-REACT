@@ -1,38 +1,26 @@
-import { useState } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import AddPost from "../components/post/add-post/AddPost";
 import Posts from "../components/post/Posts";
 import ShowPost from "../components/post/show-post/ShowPost";
 
 const Dashboard = () => {
   const [showPostDiv, setShowPostDiv] = useState(false);
-  const [posts, setPosts] = useState([
-    {
-      id: 111,
-      title: "Happiness",
-      author: "John",
-    },
-    {
-      id: 112,
-      title: "MIU",
-      author: "Dean",
-    },
-    {
-      id: 113,
-      title: "Enjoy Life",
-      author: "Jasmine",
-    },
-  ]);
+  const [posts, setPosts] = useState([]);
   const [dataToShow, setDataToShow] = useState();
 
-  const onDataSubmit = (title, author) => {
-    const post = {
-      id: Math.floor(Math.random() * 1000),
-      title: title,
-      author: author,
-    };
-    let newPostList = [...posts, post];
-    setPosts(newPostList);
-    console.log(newPostList);
+  const getAllPosts = () => {
+    axios
+      .get("http://localhost:8080/api/v1/posts")
+      .then((response) => {
+        setPosts(response.data);
+        console.log(response.data);
+      })
+      .catch((err) => console.log(err.message));
+  };
+
+  const onDataSubmit = () => {
+    getAllPosts();
   };
 
   const showData = (id) => {
@@ -40,6 +28,9 @@ const Dashboard = () => {
     setDataToShow(post);
     setShowPostDiv(true);
   };
+  useEffect(() => {
+    getAllPosts();
+  }, []);
 
   return (
     <>
