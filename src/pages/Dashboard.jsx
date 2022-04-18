@@ -3,11 +3,13 @@ import { useEffect, useState } from "react";
 import AddPost from "../components/post/add-post/AddPost";
 import Posts from "../components/post/Posts";
 import ShowPost from "../components/post/show-post/ShowPost";
+import { SelectedDataContext, SelectedIdContext } from "../context/SelectedDataContext";
 
 const Dashboard = () => {
   const [showPostDiv, setShowPostDiv] = useState(false);
   const [posts, setPosts] = useState([]);
   const [dataToShow, setDataToShow] = useState();
+  const [selectedData, setSelectedData] = useState();
 
   const getAllPosts = () => {
     axios
@@ -23,9 +25,7 @@ const Dashboard = () => {
     getAllPosts();
   };
 
-  const showData = (id) => {
-    const post = posts.find((post) => post.id === id);
-    setDataToShow(post);
+  const showData = () => {
     setShowPostDiv(true);
   };
   useEffect(() => {
@@ -34,6 +34,7 @@ const Dashboard = () => {
 
   return (
     <>
+    <SelectedDataContext.Provider value={{selectedData, setSelectedData}}>
       <div className="row">
         <div className="col-sm-6">
           <Posts posts={posts} showPost={showData} />
@@ -43,8 +44,9 @@ const Dashboard = () => {
         </div>
       </div>
       <div className="row card">
-        {showPostDiv && <ShowPost post={dataToShow} />}
+        {showPostDiv && <ShowPost />}
       </div>
+      </SelectedDataContext.Provider>
     </>
   );
 };
